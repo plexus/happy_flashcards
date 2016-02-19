@@ -1,7 +1,21 @@
 GEM
   remote: https://rubygems.org/
   specs:
+    abstract_type (0.0.7)
+    adamantium (0.2.0)
+      ice_nine (~> 0.11.0)
+      memoizable (~> 0.4.0)
+    anima (0.2.0)
+      abstract_type (~> 0.0.7)
+      adamantium (~> 0.1)
+      equalizer (~> 0.0.8)
+    attribs (1.0.0)
+      anima (~> 0.2.0)
     diff-lcs (1.2.5)
+    equalizer (0.0.11)
+    ice_nine (0.11.1)
+    memoizable (0.4.2)
+      thread_safe (~> 0.3, >= 0.3.1)
     rspec (3.4.0)
       rspec-core (~> 3.4.0)
       rspec-expectations (~> 3.4.0)
@@ -15,11 +29,13 @@ GEM
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.4.0)
     rspec-support (3.4.1)
+    thread_safe (0.3.5)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
+  attribs
   rspec
 
 BUNDLED WITH
