@@ -6,4 +6,9 @@ RSpec.describe Flashcards do
   specify do
     expect(deck.size).to eql 5
   end
+
+  specify do
+    expect(deck.first.front).to eql "a"
+  end
+
 end
