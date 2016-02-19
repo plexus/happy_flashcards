@@ -27,8 +27,7 @@ module Flashcards
     end
 
     def answer_false(card, time)
-      card.interval = ONE_MINUTE
-      card.last_review_time = time
+      card.answer_false!(time)
       self
     end
 
@@ -51,6 +50,13 @@ module Flashcards
       self.interval = INTERVALS.fetch(streak) { interval * factor }
       self.last_review_time = time
       self.factor += 0.15
+    end
+
+    def answer_false!(time)
+      self.streak = 0
+      self.interval = ONE_MINUTE
+      self.last_review_time = time
+      self.factor -= 0.15
     end
   end
 end

@@ -19,17 +19,11 @@ module Flashcards
 
   class Deck < Vector
     def answer_correct(card, time)
-      put(
-        index(card),
-        card.answer_correct(time)
-      )
+      put(index(card), card.answer_correct(time))
     end
 
     def answer_false(card, time)
-      put(
-        index(card),
-        card.with(interval: ONE_MINUTE, last_review_time: time)
-      )
+      put(index(card), card.answer_false(time))
     end
 
     def next(now)
@@ -57,6 +51,15 @@ module Flashcards
         interval: INTERVALS.fetch(streak + 1) { interval * factor },
         last_review_time: time,
         factor: factor + 0.15
+      )
+    end
+
+    def answer_false(time)
+      with(
+        interval: ONE_MINUTE,
+        last_review_time: time,
+        streak: 0,
+        factor: factor - 0.15
       )
     end
   end

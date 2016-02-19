@@ -87,6 +87,10 @@ RSpec.describe Flashcards do
     it "will keep track of the last review time" do
       expect(card.last_review_time).to eql a_time
     end
+
+    it "will have a reduced ease factor" do
+      expect(card.factor).to be < 2.5
+    end
   end
 
   context "after two correct answers" do
