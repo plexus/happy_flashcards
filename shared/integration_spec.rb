@@ -35,6 +35,14 @@ RSpec.describe Flashcards do
     it "will have an initial interval of 10 minutes" do
       expect(card.interval).to be 600
     end
+
+    it "will have an initial factor of 2.5" do
+      expect(card.factor).to be 2.5
+    end
+
+    it "will have a streak of 1" do
+      expect(card.streak).to be 1
+    end
   end
 
   context "after a correct first answer" do
@@ -45,7 +53,7 @@ RSpec.describe Flashcards do
     let(:card) { @deck.first }
 
     it "will have an interval of one day" do
-      expect(card.interval).to be Flashcards::ONE_DAY
+      expect(card.interval).to be days(1)
     end
 
     it "will keep track of the last review time" do
@@ -62,6 +70,35 @@ RSpec.describe Flashcards do
 
     it "will be due in a day" do
       expect(@deck.next(a_time + minutes(1) + days(1))).to eql card
+    end
+  end
+
+  context "after a false answer" do
+    before do
+      @deck = deck.answer_false(deck.first, a_time)
+    end
+
+    let(:card) { @deck.first }
+
+    it "will have an interval of one minute" do
+      expect(card.interval).to be minutes(1)
+    end
+
+    it "will keep track of the last review time" do
+      expect(card.last_review_time).to eql a_time
+    end
+  end
+
+  context "after two correct answers" do
+    before do
+      @deck = deck.answer_correct(deck.first, a_time)
+      @deck = @deck.answer_correct(@deck.first, a_time)
+    end
+
+    let(:card) { @deck.first }
+
+    it "will have an interval of 2.65 days" do
+      expect(card.interval).to eql days(2.65)
     end
   end
 
