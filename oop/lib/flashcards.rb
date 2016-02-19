@@ -18,17 +18,26 @@ module Flashcards
       super([])
     end
 
-    def answer_correct(card)
-      if card.interval = TEN_MINUTES
+    def answer_correct(card, time)
+      if card.interval == TEN_MINUTES
         card.interval = ONE_DAY
+        card.last_review_time = time
       end
       self
     end
+
+    def next(now)
+      detect {|card| card.due?(now) }
+    end
   end
 
-  class Card < Struct.new(:front, :back, :interval)
+  class Card < Struct.new(:front, :back, :interval, :last_review_time)
     def self.create(front, back)
-      new(front, back, TEN_MINUTES)
+      new(front, back, TEN_MINUTES, nil)
+    end
+
+    def due?(now)
+      last_review_time.nil? || now > last_review_time + interval
     end
   end
 end

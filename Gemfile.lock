@@ -1,3 +1,8 @@
+PATH
+  remote: /home/arne/github/fn
+  specs:
+    fn (0.1.0)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -39,6 +44,7 @@ PLATFORMS
 
 DEPENDENCIES
   attribs
+  fn!
   hamster
   rspec
 
