@@ -16,16 +16,20 @@ module Flashcards
 
     def_delegators :cards, :first, :size
 
-    def answer_correct(card)
+    def replace(old_card, new_card)
       with(
         cards: cards.map do |c|
-          if c.equal?(card)
-            c.with_interval(ONE_DAY)
+          if c.equal?(old_card)
+            new_card
           else
             c
           end
         end
       )
+    end
+
+    def answer_correct(card)
+      replace(card, card.with_interval(ONE_DAY))
     end
   end
 
