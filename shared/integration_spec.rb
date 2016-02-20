@@ -1,4 +1,6 @@
 # coding: utf-8
+require_relative "persistence"
+
 EXAMPLE_DECK = Pathname(__FILE__).dirname.join("example_deck.csv")
 
 RSpec.describe Flashcards do
@@ -37,7 +39,7 @@ RSpec.describe Flashcards do
     end
 
     it "will have an initial factor of 2.5" do
-      expect(card.factor).to be 2.5
+      expect(card.factor).to eql 2.5
     end
 
     it "will have a streak of 1" do

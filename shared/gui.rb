@@ -11,6 +11,7 @@ end
 $LOAD_PATH.unshift(Pathname(__FILE__).join("../../#{ARGV[0]}/lib"))
 
 require "flashcards"
+require_relative "persistence"
 
 require "shoes"
 
@@ -41,6 +42,7 @@ Shoes.app do
 
   def next!
     print_inspect!(@deck)
+
     @card = @deck.next(Time.now)
 
     if @card

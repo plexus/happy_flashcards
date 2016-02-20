@@ -13,10 +13,6 @@ module Flashcards
 
   Vector = Hamster::Vector
 
-  def self.load_csv(input)
-    Deck.new(CSV.open(input).map {|f,b| Card.new(front: f, back: b) })
-  end
-
   class Deck < Vector
     def answer_correct(card, time)
       put(index(card), card.answer_correct(time))

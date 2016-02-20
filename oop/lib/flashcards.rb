@@ -1,5 +1,5 @@
-require 'csv'
-require 'delegate'
+require "delegate"
+require "equalizer"
 
 module Flashcards
   ONE_MINUTE = 60
@@ -8,19 +8,7 @@ module Flashcards
   INITIAL_EASE_FACTOR = 2.5
   INTERVALS = [ONE_MINUTE, TEN_MINUTES, ONE_DAY]
 
-  def self.load_csv(input)
-    Deck.new.tap do |deck|
-      CSV.open(input).each do |f,b|
-        deck << Card.create(f, b)
-      end
-    end
-  end
-
   class Deck < SimpleDelegator
-    def initialize
-      super([])
-    end
-
     def answer_correct(card, time)
       card.answer_correct!(time)
       self
@@ -34,13 +22,25 @@ module Flashcards
     def next(now)
       detect {|card| card.due?(now) }
     end
+
+    def eql?(other)
+      zip(other).all? {|a,b| a.eql?(b) }
+    end
   end
 
-  FIELDS = [:front, :back, :factor, :interval, :streak, :last_review_time]
+  class Card
+    ATTRS = [:front, :back, :factor, :interval, :streak, :last_review_time]
 
-  class Card < Struct.new(*FIELDS)
-    def self.create(front, back)
-      new(front, back, INITIAL_EASE_FACTOR, TEN_MINUTES, 1, nil)
+    include Equalizer.new(*ATTRS)
+    attr_accessor *ATTRS
+
+    def initialize(**args)
+      @front = args.fetch(:front)
+      @back = args.fetch(:back)
+      @factor = args.fetch(:factor, INITIAL_EASE_FACTOR)
+      @interval = args.fetch(:interval, TEN_MINUTES)
+      @streak = args.fetch(:streak, 1)
+      @last_review_time = args.fetch(:last_review_time, nil)
     end
 
     def due?(now)
@@ -59,6 +59,17 @@ module Flashcards
       self.interval = ONE_MINUTE
       self.last_review_time = time
       self.factor -= 0.15
+    end
+
+    def to_h
+      {
+        front: @front,
+        back: @back,
+        factor: @factor,
+        interval: @interval,
+        streak: @streak,
+        last_review_time: @last_review_time,
+      }
     end
   end
 end
