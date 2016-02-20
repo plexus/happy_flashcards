@@ -36,7 +36,9 @@ module Flashcards
     end
   end
 
-  class Card < Struct.new(:front, :back, :factor, :interval, :streak, :last_review_time)
+  FIELDS = [:front, :back, :factor, :interval, :streak, :last_review_time]
+
+  class Card < Struct.new(*FIELDS)
     def self.create(front, back)
       new(front, back, INITIAL_EASE_FACTOR, TEN_MINUTES, 1, nil)
     end
