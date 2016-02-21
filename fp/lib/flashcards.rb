@@ -14,12 +14,12 @@ module Flashcards
   Vector = Hamster::Vector
 
   class Deck < Vector
-    def answer_correct(card, time)
-      put(index(card), card.answer_correct(time))
+    def answer_right(card, time)
+      put(index(card), card.answer_right(time))
     end
 
-    def answer_false(card, time)
-      put(index(card), card.answer_false(time))
+    def answer_wrong(card, time)
+      put(index(card), card.answer_wrong(time))
     end
 
     def next(now)
@@ -41,7 +41,7 @@ module Flashcards
       last_review_time.nil? || now > last_review_time + interval
     end
 
-    def answer_correct(time)
+    def answer_right(time)
       with(
         streak: streak + 1,
         interval: INTERVALS.fetch(streak + 1) { interval * factor },
@@ -50,7 +50,7 @@ module Flashcards
       )
     end
 
-    def answer_false(time)
+    def answer_wrong(time)
       with(
         interval: ONE_MINUTE,
         last_review_time: time,

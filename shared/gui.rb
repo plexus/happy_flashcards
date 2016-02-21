@@ -70,12 +70,12 @@ Shoes.app do
       end
 
       @right = button "Right", margin: 5 do
-        @deck = @deck.answer_correct(@card, Time.now)
+        @deck = @deck.answer_right(@card, Time.now)
         next!
       end
 
       @wrong = button "Wrong", margin: 5 do
-        @deck = @deck.answer_false(@card, Time.now)
+        @deck = @deck.answer_wrong(@card, Time.now)
         next!
       end
 

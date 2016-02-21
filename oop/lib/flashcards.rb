@@ -9,13 +9,13 @@ module Flashcards
   INTERVALS = [ONE_MINUTE, TEN_MINUTES, ONE_DAY]
 
   class Deck < SimpleDelegator
-    def answer_correct(card, time)
-      card.answer_correct!(time)
+    def answer_right(card, time)
+      card.answer_right!(time)
       self
     end
 
-    def answer_false(card, time)
-      card.answer_false!(time)
+    def answer_wrong(card, time)
+      card.answer_wrong!(time)
       self
     end
 
@@ -47,14 +47,14 @@ module Flashcards
       last_review_time.nil? || now > last_review_time + interval
     end
 
-    def answer_correct!(time)
+    def answer_right!(time)
       self.streak += 1
       self.interval = INTERVALS.fetch(streak) { interval * factor }
       self.last_review_time = time
       self.factor += 0.15
     end
 
-    def answer_false!(time)
+    def answer_wrong!(time)
       self.streak = 0
       self.interval = ONE_MINUTE
       self.last_review_time = time

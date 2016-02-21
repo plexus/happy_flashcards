@@ -49,7 +49,7 @@ RSpec.describe Flashcards do
 
   context "after a correct first answer" do
     before do
-      @deck = deck.answer_correct(deck.first, a_time)
+      @deck = deck.answer_right(deck.first, a_time)
     end
 
     let(:card) { @deck.first }
@@ -77,7 +77,7 @@ RSpec.describe Flashcards do
 
   context "after a false answer" do
     before do
-      @deck = deck.answer_false(deck.first, a_time)
+      @deck = deck.answer_wrong(deck.first, a_time)
     end
 
     let(:card) { @deck.first }
@@ -97,8 +97,8 @@ RSpec.describe Flashcards do
 
   context "after two correct answers" do
     before do
-      @deck = deck.answer_correct(deck.first, a_time)
-      @deck = @deck.answer_correct(@deck.first, a_time)
+      @deck = deck.answer_right(deck.first, a_time)
+      @deck = @deck.answer_right(@deck.first, a_time)
     end
 
     let(:card) { @deck.first }
