@@ -34,6 +34,10 @@ module Flashcards
     def write_value(v)
       H[:span, {"data-type" => v.class.to_s, "data-value" => v.to_s}, v.inspect]
     end
+
+    def save_deck(deck, file)
+      File.write(file, write_deck(deck).to_html)
+    end
   end
 
   module HTMLInput
@@ -78,6 +82,11 @@ module Flashcards
         raise "Unreadable type: #{type} => #{val}}"
       end
     end
+
+    def load_deck(file)
+      read_deck(Hexp.parse(File.read(file)))
+    end
+
   end
 
   extend CSV, HTMLOutput, HTMLInput

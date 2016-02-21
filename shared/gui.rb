@@ -83,6 +83,31 @@ Shoes.app do
         next!
       end
     end
+
+    flow do
+      @load_csv = button "Import CSV" do
+        fname = ask_open_file
+        if fname
+          @deck = Flashcards.load_csv(fname)
+        end
+        next!
+      end
+
+      @load_deck = button "Load deck" do
+        fname = ask_open_file
+        if fname
+          @deck = Flashcards.load_deck(fname)
+        end
+        next!
+      end
+
+      @save_deck = button "Save deck" do
+        fname = ask_save_file
+        if fname
+          Flashcards.save_deck(@deck, fname)
+        end
+      end
+    end
   end
 
   next!
