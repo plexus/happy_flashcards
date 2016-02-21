@@ -1,5 +1,6 @@
 require "delegate"
 require "equalizer"
+require "securerandom"
 
 module Flashcards
   ONE_MINUTE = 60
@@ -29,12 +30,13 @@ module Flashcards
   end
 
   class Card
-    ATTRS = [:front, :back, :factor, :interval, :streak, :last_review_time]
+    ATTRS = [:id, :front, :back, :factor, :interval, :streak, :last_review_time]
 
     include Equalizer.new(*ATTRS)
     attr_accessor *ATTRS
 
     def initialize(**args)
+      @id = args.fetch(:id) { SecureRandom.uuid }
       @front = args.fetch(:front)
       @back = args.fetch(:back)
       @factor = args.fetch(:factor, INITIAL_EASE_FACTOR)
@@ -63,12 +65,13 @@ module Flashcards
 
     def to_h
       {
-        front: @front,
-        back: @back,
-        factor: @factor,
-        interval: @interval,
-        streak: @streak,
-        last_review_time: @last_review_time,
+        id: id,
+        front: front,
+        back: back,
+        factor: factor,
+        interval: interval,
+        streak: streak,
+        last_review_time: last_review_time,
       }
     end
   end

@@ -1,5 +1,7 @@
 require "csv"
 require "pathname"
+require "securerandom"
+
 require "attribs"
 require "hamster"
 require "fn/global"
@@ -29,6 +31,7 @@ module Flashcards
 
   class Card
     include Attribs.new(
+      :id,
       :front,
       :back,
       factor: INITIAL_EASE_FACTOR,
@@ -36,6 +39,10 @@ module Flashcards
       streak: 1,
       last_review_time: nil
     )
+
+    def initialize(**args)
+      super({id: SecureRandom.uuid}.merge(args))
+    end
 
     def due?(now)
       last_review_time.nil? || now > last_review_time + interval

@@ -8,13 +8,15 @@ unless %w[fp oop].include?(ARGV[0])
   exit -1
 end
 
-$LOAD_PATH.unshift(Pathname(__FILE__).join("../../#{ARGV[0]}/lib"))
+BACKEND=ARGV[0]
+
+$LOAD_PATH.unshift(Pathname(__FILE__).join("../../#{BACKEND}/lib"))
 
 require "flashcards"
 require_relative "persistence"
+require_relative "session"
 
 require "shoes"
-require "attribs"
 
 NBSP="\u00A0"
 
@@ -30,33 +32,8 @@ def print_inspect!(deck)
            card.last_review_time && card.last_review_time.strftime("%Y-%m-%d %H:%M")
          ]
   end
+  puts session.history.length
 end
-
-
-class Session
-  include Attribs.new(:location, :deck, current_card: nil)
-
-  def self.open(file)
-    new(location: file, deck: Flashcards.load_deck(file))
-  end
-
-  def close
-    Flashcards.save_deck(deck, location)
-  end
-
-  def next!
-    @current_card = deck.next(Time.now)
-  end
-
-  def answer_right!
-    @deck = deck.answer_right(current_card, Time.now)
-  end
-
-  def answer_wrong!
-    @deck = deck.answer_wrong(current_card, Time.now)
-  end
-end
-
 
 Shoes.app do
   def card
@@ -67,11 +44,9 @@ Shoes.app do
     @session
   end
 
-  def next!
+  def redraw!
     if session
       print_inspect!(session.deck)
-
-      session.next!
 
       if card
         @front.text = card.front
@@ -84,10 +59,21 @@ Shoes.app do
         [@right, @wrong, @show].each(&:hide)
         @recheck.show
       end
-    else
-      [@show, @right, @wrong, @recheck].each(&:hide)
-    end
 
+      if session.history.any? && BACKEND == "fp"
+        @undo.show
+      else
+        @undo.hide
+      end
+
+    else
+      [@undo, @show, @right, @wrong, @recheck].each(&:hide)
+    end
+  end
+
+  def next!
+    session.next! if session
+    redraw!
   end
 
   stack margin: 30 do
@@ -114,6 +100,11 @@ Shoes.app do
       @recheck = button "Recheck", margin: 5 do
         next!
       end
+
+      @undo = button "Undo", margin: 5 do
+        session.undo!
+        redraw!
+      end
     end
 
     flow do
@@ -126,7 +117,7 @@ Shoes.app do
         end
 
         if fname
-          @session = Session.open(fname)
+          @session = Flashcards::Session.open(fname)
         end
 
         next!
@@ -141,14 +132,14 @@ Shoes.app do
         end
 
         if fname
-          @session = Session.new(location: fname + ".html", deck: Flashcards.load_csv(fname))
+          @session = Flashcards::Session.new(location: fname + ".html", deck: Flashcards.load_csv(fname))
         end
         next!
 
       end
 
       # @save_deck = button "Save deck" do
-      #   fname = ask_save_file
+      #   fname = ask_save_files
       #   if fname
       #     Flashcards.save_deck(@deck, fname)
       #   end
