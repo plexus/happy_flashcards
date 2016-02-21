@@ -6,6 +6,10 @@ require "attribs"
 require "hamster"
 require "fn/global"
 
+require_relative "events"
+require_relative "session_service"
+require_relative "monkey_patches"
+
 module Flashcards
   ONE_MINUTE = 60
   TEN_MINUTES = 10*60
@@ -16,16 +20,13 @@ module Flashcards
   Vector = Hamster::Vector
 
   class Deck < Vector
-    def answer_right(card, time)
-      put(index(card), card.answer_right(time))
-    end
-
-    def answer_wrong(card, time)
-      put(index(card), card.answer_wrong(time))
-    end
-
     def next(now)
       detect &fn(:due?, now)
+    end
+
+    def update(uuid, &block)
+      card = detect {|card| card.id == uuid }
+      put(index(card), block.call(card))
     end
   end
 

@@ -117,7 +117,7 @@ Shoes.app do
         end
 
         if fname
-          @session = Flashcards::Session.open(fname)
+          @session = Flashcards::SessionService.open(fname)
         end
 
         next!
@@ -132,7 +132,7 @@ Shoes.app do
         end
 
         if fname
-          @session = Flashcards::Session.new(location: fname + ".html", deck: Flashcards.load_csv(fname))
+          @session = Flashcards::SessionService.new(location: fname + ".html", deck: Flashcards.load_csv(fname))
         end
         next!
 
